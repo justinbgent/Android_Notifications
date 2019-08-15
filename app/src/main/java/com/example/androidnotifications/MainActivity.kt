@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         const val NOTIFICATION_ID = 54
+        const val NOTIFICATION_ID2 = 545
         const val STRING_KEY = "STRING"
     }
 
@@ -50,6 +51,33 @@ class MainActivity : AppCompatActivity() {
                 .setAutoCancel(true)
                 .setContentIntent(eventualIntent)
             notifManager.notify(NOTIFICATION_ID, notifBuilder.build())
+        }
+
+        val notifManager2 = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelID2 = "Max Notification"
+
+        btn_two.setOnClickListener {
+            var intent2 = Intent(this, FullscreenActivity::class.java)
+            intent2.putExtra(STRING_KEY, "Second Button Pressed")
+            val eventualIntent2 = PendingIntent.getActivity(this, 1, intent2, PendingIntent.FLAG_ONE_SHOT)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                val name = "Max Notification Channel"
+                val notifChannel = NotificationChannel(channelID2, name, NotificationManager.IMPORTANCE_MAX)
+                notifChannel.description = "I want a 2nd description"
+                notifManager2.createNotificationChannel(notifChannel)
+            }
+
+            val notifBuilder = NotificationCompat.Builder(this, channelID2)
+                .setPriority(NotificationManager.IMPORTANCE_MAX)
+                .setContentTitle("Max Notification")
+                .setContentText("What a max notification looks like.")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+                .setDefaults(Notification.DEFAULT_ALL) //setDefaults, sets sounds/vibration/light upon notification
+                .setAutoCancel(true)
+                .setContentIntent(eventualIntent2)
+            notifManager2.notify(NOTIFICATION_ID2, notifBuilder.build())
         }
     }
 }
