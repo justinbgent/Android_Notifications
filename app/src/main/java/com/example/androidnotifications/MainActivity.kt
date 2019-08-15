@@ -3,7 +3,9 @@ package com.example.androidnotifications
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         const val NOTIFICATION_ID = 54
+        const val STRING_KEY = "STRING"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +28,10 @@ class MainActivity : AppCompatActivity() {
         val channelID = "Basic Notification"
 
         btn_notif.setOnClickListener {
+            var intent = Intent(this, FullscreenActivity::class.java)
+            intent.putExtra(STRING_KEY, "Notification Tapped")
+            val eventualIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
             //this whole if statement is specifically for the Notification Channel, which is only in newer versions. What if I don't do this part?
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                 val name = "Basic Notification Channel"
@@ -40,6 +47,8 @@ class MainActivity : AppCompatActivity() {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
                 .setDefaults(Notification.DEFAULT_ALL) //sets sounds/vibration/light upon notification
+                .setAutoCancel(true)
+                .setContentIntent(eventualIntent)
             notifManager.notify(NOTIFICATION_ID, notifBuilder.build())
         }
     }
